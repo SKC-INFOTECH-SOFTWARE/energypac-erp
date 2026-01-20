@@ -114,3 +114,71 @@ class Bank(UUIDModel, TimeStampedModel, StatusModel):
 
     def __str__(self):
         return f"{self.name} - {self.ifsc_code}"
+
+
+class Vendor(UUIDModel, TimeStampedModel, StatusModel):
+    """
+    Vendor master.
+    Represents suppliers from whom goods/services are procured.
+    """
+
+    name = models.CharField(max_length=255, unique=True)
+
+    code = models.CharField(max_length=50, unique=True, help_text="Unique vendor code")
+
+    contact_person = models.CharField(max_length=255, blank=True)
+
+    phone = models.CharField(max_length=50, blank=True)
+
+    email = models.EmailField(blank=True)
+
+    address = models.TextField(blank=True)
+
+    gst_number = models.CharField(
+        max_length=50, blank=True, help_text="GST / Tax identification number"
+    )
+
+    country = models.CharField(max_length=100, blank=True)
+
+    class Meta:
+        db_table = "master_vendors"
+        verbose_name = "Vendor"
+        verbose_name_plural = "Vendors"
+
+    def __str__(self):
+        return f"{self.code} - {self.name}"
+
+
+class Customer(UUIDModel, TimeStampedModel, StatusModel):
+    """
+    Customer master.
+    Represents customers to whom goods/services are sold.
+    """
+
+    name = models.CharField(max_length=255, unique=True)
+
+    code = models.CharField(
+        max_length=50, unique=True, help_text="Unique customer code"
+    )
+
+    contact_person = models.CharField(max_length=255, blank=True)
+
+    phone = models.CharField(max_length=50, blank=True)
+
+    email = models.EmailField(blank=True)
+
+    address = models.TextField(blank=True)
+
+    gst_number = models.CharField(
+        max_length=50, blank=True, help_text="GST / Tax identification number"
+    )
+
+    country = models.CharField(max_length=100, blank=True)
+
+    class Meta:
+        db_table = "master_customers"
+        verbose_name = "Customer"
+        verbose_name_plural = "Customers"
+
+    def __str__(self):
+        return f"{self.code} - {self.name}"
