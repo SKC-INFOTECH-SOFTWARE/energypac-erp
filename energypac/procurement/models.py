@@ -3,6 +3,7 @@ from django.db import models
 from core.models import UUIDModel, TimeStampedModel, StatusModel
 from items.models import Item
 from masters.models import Department
+from masters.models import Vendor
 
 
 class PurchaseRequisition(UUIDModel, TimeStampedModel, StatusModel):
@@ -12,15 +13,11 @@ class PurchaseRequisition(UUIDModel, TimeStampedModel, StatusModel):
     """
 
     pr_number = models.CharField(
-        max_length=50,
-        unique=True,
-        help_text="Unique PR reference number"
+        max_length=50, unique=True, help_text="Unique PR reference number"
     )
 
     department = models.ForeignKey(
-        Department,
-        on_delete=models.PROTECT,
-        related_name="purchase_requisitions"
+        Department, on_delete=models.PROTECT, related_name="purchase_requisitions"
     )
 
     required_date = models.DateField()
@@ -42,21 +39,14 @@ class PurchaseRequisitionItem(UUIDModel, TimeStampedModel):
     """
 
     purchase_requisition = models.ForeignKey(
-        PurchaseRequisition,
-        on_delete=models.CASCADE,
-        related_name="items"
+        PurchaseRequisition, on_delete=models.CASCADE, related_name="items"
     )
 
     item = models.ForeignKey(
-        Item,
-        on_delete=models.PROTECT,
-        related_name="purchase_requisition_items"
+        Item, on_delete=models.PROTECT, related_name="purchase_requisition_items"
     )
 
-    quantity = models.DecimalField(
-        max_digits=12,
-        decimal_places=3
-    )
+    quantity = models.DecimalField(max_digits=12, decimal_places=3)
 
     remarks = models.TextField(blank=True)
 
@@ -76,17 +66,17 @@ class PurchaseOrder(UUIDModel, TimeStampedModel, StatusModel):
     """
 
     po_number = models.CharField(
-        max_length=50,
-        unique=True,
-        help_text="Unique PO reference number"
+        max_length=50, unique=True, help_text="Unique PO reference number"
     )
-
+    vendor = models.ForeignKey(
+        Vendor, on_delete=models.PROTECT, related_name="purchase_orders", null=True, blank=True
+    )
     pr = models.ForeignKey(
         PurchaseRequisition,
         null=True,
         blank=True,
         on_delete=models.SET_NULL,
-        related_name="purchase_orders"
+        related_name="purchase_orders",
     )
 
     order_date = models.DateField()
@@ -110,26 +100,16 @@ class PurchaseOrderItem(UUIDModel, TimeStampedModel):
     """
 
     purchase_order = models.ForeignKey(
-        PurchaseOrder,
-        on_delete=models.CASCADE,
-        related_name="items"
+        PurchaseOrder, on_delete=models.CASCADE, related_name="items"
     )
 
     item = models.ForeignKey(
-        Item,
-        on_delete=models.PROTECT,
-        related_name="purchase_order_items"
+        Item, on_delete=models.PROTECT, related_name="purchase_order_items"
     )
 
-    quantity = models.DecimalField(
-        max_digits=12,
-        decimal_places=3
-    )
+    quantity = models.DecimalField(max_digits=12, decimal_places=3)
 
-    rate = models.DecimalField(
-        max_digits=12,
-        decimal_places=2
-    )
+    rate = models.DecimalField(max_digits=12, decimal_places=2)
 
     class Meta:
         db_table = "purchase_order_items"
